@@ -1,7 +1,7 @@
 # GoAlchemy [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/dshills/goalchemy)
 
 ## Overview
-Simple Go SDK for IBM Alchemy API
+Simple Go SDK for the IBM Alchemy API
 
 ## Features
 
