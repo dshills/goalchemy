@@ -1,3 +1,7 @@
+// Copyright 2015 Davin Hills. All rights reserved.
+// MIT license. License details can be found in the LICENSE file.
+
+// goalchemy package supports queries against the IBM Alchemy API
 package goalchemy
 
 import (

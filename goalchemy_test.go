@@ -1,3 +1,5 @@
+// Copyright 2015 Davin Hills. All rights reserved.
+// MIT license. License details can be found in the LICENSE file.
 package goalchemy_test
 
 /* REQUIRES API KEY
