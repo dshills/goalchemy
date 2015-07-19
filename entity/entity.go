@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Entity enpoint constants
+// Entity endpoint constants
 const (
 	EndpointURL  = "url/URLGetRankedNamedEntities"
 	EndpointText = "text/TextGetRankedNamedEntities"

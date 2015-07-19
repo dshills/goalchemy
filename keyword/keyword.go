@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Keyword enpoint constants
+// Keyword endpoint constants
 const (
 	EndpointURL  = "url/URLGetRankedKeywords"
 	EndpointText = "text/TextGetRankedKeywords"

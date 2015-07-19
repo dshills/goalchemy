@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Concept enpoint constants
+// Concept endpoint constants
 const (
 	EndpointURL  = "url/URLGetRankedConcepts"
 	EndpointText = "text/TextGetRankedConcepts"

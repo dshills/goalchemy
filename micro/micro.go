@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Micro enpoint constants
+// Micro endpoint constants
 const (
 	EndpointURL  = "url/URLGetMicroformatData"
 	EndpointHTML = "html/HTMLGetMicroformatData"
