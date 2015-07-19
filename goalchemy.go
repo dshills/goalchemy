@@ -12,7 +12,7 @@ import (
 
 const baseurl = "https://access.alchemyapi.com/calls/"
 
-// add to HTTP header
+// TODO add to HTTP header
 // Accept-encoding:gzip
 
 // AlchemyAPIer supports calling and decoding an AlchemyAPI query

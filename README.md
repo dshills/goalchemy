@@ -46,7 +46,7 @@ func (co *Query) AddParam(k, v string)
 // SetParam sets a key value pair replacing they key if found.
 func (co *Query) SetParam(k, v string) {
 
-// Run builds a query string, calls the appropriate AlchemyAPI and returns te decoded results
+// Run builds a query string, calls the appropriate AlchemyAPI and returns the decoded results
 // into the AlchemyAPIer interface
 func (co *Query) Run(api AlchemyAPIer) error
 ```
