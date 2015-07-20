@@ -2,8 +2,8 @@
 // MIT license. License details can be found in the LICENSE file.
 package goalchemy_test
 
-/* REQUIRES API KEY
 import (
+	"os"
 	"testing"
 
 	"github.com/dshills/goalchemy"
@@ -11,10 +11,19 @@ import (
 	"github.com/dshills/goalchemy/entity"
 	"github.com/dshills/goalchemy/keyword"
 	"github.com/dshills/goalchemy/micro"
+	"github.com/dshills/goalchemy/relation"
 	"github.com/dshills/goalchemy/taxonomy"
 )
 
-const apikey = "<PUT API KEY HERE>"
+var apikey string
+
+func init() {
+	apikey = os.Getenv("ALCHEMY_APIKEY")
+	if len(apikey) == 0 {
+		panic("Alchemy API Key is required. Set $ALCHEMY_APIKEY")
+	}
+}
+
 const testurl = "http://www.desmoinesregister.com/story/news/crime-and-courts/2015/07/14/van-meter-taser-fundraiser-modified/30129893/?hootPostID=%5B%27e34bfcfff7cf7090f7c60c8ecd6167a8%27%5D"
 const testurl2 = `http://www.dailymail.co.uk/sciencetech/article-2355833/Apples-iPhone-5-hated-handset--majority-people-love-Samsung-Galaxy-S4-study-finds.html`
 const testtext = `One year ago, several hours before cities across the United States started their annual fireworks displays, a different type of fireworks were set off at the European Center for Nuclear Research (CERN) in Switzerland. At 9:00 a.m., physicists announced to the world that they had found something they had been searching for for nearly 50 years: the elusive Higgs boson. Today, on the anniversary of its discovery, are we any closer to figuring out what that particle's true identity is? The Higgs boson is popularly referred to as "the God particle," perhaps because of its role in giving other particles their mass. However, it's not the boson itself that gives mass. Back in 1964, Peter Higgs proposed a theory that described a universal field (similar to an electric or a magnetic field) that particles interacted with.`
@@ -129,4 +138,25 @@ func TestQueryMicro(t *testing.T) {
 		t.Error(err)
 	}
 }
-*/
+
+func TestRelation(t *testing.T) {
+	e := &relation.Relation{}
+	q := goalchemy.NewQuery(relation.EndpointURL, apikey)
+	q.AddParam("url", testurl)
+	if err := q.Run(e); err != nil {
+		t.Error(err)
+	}
+	if len(e.Results) == 0 {
+		t.Error("Expected len > 1 got 0")
+	}
+
+	e = &relation.Relation{}
+	q = goalchemy.NewQuery(relation.EndpointText, apikey)
+	q.AddParam("text", testtext)
+	if err := q.Run(e); err != nil {
+		t.Error(err)
+	}
+	if len(e.Results) == 0 {
+		t.Error("Expected len > 1 got 0")
+	}
+}
