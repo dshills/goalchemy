@@ -31,7 +31,7 @@ if err := query.Run(tax); err != nil {
 	panic(err)
 }
 
-// Shiny new taxonomy for aurl
+// Shiny list of taxonomies for aurl
 fmt.Println(tax)
 ```
 
@@ -54,7 +54,7 @@ func (co *Query) Run(api AlchemyAPIer) error
 ```
 
 ### AlchemyAPIer
-All of the supported APIs are build as AlchemyAPIer interfaces.
+All of the supported APIs are built as AlchemyAPIer interfaces.
 
 ```go
 // AlchemyAPIer supports calling and decoding an AlchemyAPI query
