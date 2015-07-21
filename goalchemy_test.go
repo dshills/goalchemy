@@ -1,5 +1,6 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
+
 package goalchemy_test
 
 import (
@@ -7,12 +8,7 @@ import (
 	"testing"
 
 	"github.com/dshills/goalchemy"
-	"github.com/dshills/goalchemy/concept"
-	"github.com/dshills/goalchemy/entity"
-	"github.com/dshills/goalchemy/keyword"
-	"github.com/dshills/goalchemy/micro"
-	"github.com/dshills/goalchemy/relation"
-	"github.com/dshills/goalchemy/taxonomy"
+	"github.com/dshills/goalchemy/sentiment"
 )
 
 var apikey string
@@ -29,9 +25,11 @@ const testurl2 = `http://www.dailymail.co.uk/sciencetech/article-2355833/Apples-
 const testtext = `One year ago, several hours before cities across the United States started their annual fireworks displays, a different type of fireworks were set off at the European Center for Nuclear Research (CERN) in Switzerland. At 9:00 a.m., physicists announced to the world that they had found something they had been searching for for nearly 50 years: the elusive Higgs boson. Today, on the anniversary of its discovery, are we any closer to figuring out what that particle's true identity is? The Higgs boson is popularly referred to as "the God particle," perhaps because of its role in giving other particles their mass. However, it's not the boson itself that gives mass. Back in 1964, Peter Higgs proposed a theory that described a universal field (similar to an electric or a magnetic field) that particles interacted with.`
 const testtext2 = `
 In 2009, Elliot Turner launched AlchemyAPI to process the written word, with all of its quirks and nuances, and got immediate traction. That first month, the company's eponymous language-analysis API processed 500,000 transactions. Today it's processing three billion transactions a month, or about 1,200 a second. “That's a growth rate of 6,000 times over three years,” touts Turner. “Context is super-important,” he adds. “'I'm dying' is a lot different than 'I'm dying to buy the new iPhone.'” “As we move into new markets, we're going to be making some new hires," Turner says. "We knocked down some walls and added 2,000 square feet to our office.” “We're providing the ability to translate human language in the form of web pages and documents into actionable data,” Turner says. Clients include Walmart, PR Newswire and numerous publishers and advertising networks. “This allows a news organization to detect what a person likes to read about,” says Turner of publishers and advertisers.`
+const tphrase = "samsung"
 
+/*
 func TestQueryTaxonomy(t *testing.T) {
-	taxurl := &taxonomy.Taxonomy{}
+	taxurl := &taxonomy.Taxonomies{}
 	q := goalchemy.NewQuery(taxonomy.EndpointURL, apikey)
 	q.AddParam("url", testurl)
 	if err := q.Run(taxurl); err != nil {
@@ -41,7 +39,7 @@ func TestQueryTaxonomy(t *testing.T) {
 		t.Error("Expected taxonomy len > 1 got 0")
 	}
 
-	taxtext := &taxonomy.Taxonomy{}
+	taxtext := &taxonomy.Taxonomies{}
 	q = goalchemy.NewQuery(taxonomy.EndpointText, apikey)
 	q.AddParam("text", testtext)
 	if err := q.Run(taxtext); err != nil {
@@ -53,7 +51,7 @@ func TestQueryTaxonomy(t *testing.T) {
 }
 
 func TestQueryConcept(t *testing.T) {
-	c := &concept.Concept{}
+	c := &concept.Concepts{}
 	q := goalchemy.NewQuery(concept.EndpointURL, apikey)
 	q.AddParam("url", testurl)
 	q.AddParam("knowledgeGraph", "1")
@@ -64,7 +62,7 @@ func TestQueryConcept(t *testing.T) {
 		t.Error("Expected len > 1 got 0")
 	}
 
-	c = &concept.Concept{}
+	c = &concept.Concepts{}
 	q = goalchemy.NewQuery(concept.EndpointText, apikey)
 	q.AddParam("text", testtext)
 	q.AddParam("knowledgeGraph", "1")
@@ -77,7 +75,7 @@ func TestQueryConcept(t *testing.T) {
 }
 
 func TestQueryKeyword(t *testing.T) {
-	key := &keyword.Keyword{}
+	key := &keyword.Keywords{}
 	q := goalchemy.NewQuery(keyword.EndpointURL, apikey)
 	q.AddParam("url", testurl)
 	q.AddParam("knowledgeGraph", "1")
@@ -89,7 +87,7 @@ func TestQueryKeyword(t *testing.T) {
 		t.Error("Expected len > 1 got 0")
 	}
 
-	key = &keyword.Keyword{}
+	key = &keyword.Keywords{}
 	q = goalchemy.NewQuery(keyword.EndpointText, apikey)
 	q.AddParam("text", testtext)
 	q.AddParam("knowledgeGraph", "1")
@@ -103,7 +101,7 @@ func TestQueryKeyword(t *testing.T) {
 }
 
 func TestQueryEntity(t *testing.T) {
-	e := &entity.Entity{}
+	e := &entity.Entities{}
 	q := goalchemy.NewQuery(entity.EndpointURL, apikey)
 	q.AddParam("url", testurl)
 	q.AddParam("knowledgeGraph", "1")
@@ -115,7 +113,7 @@ func TestQueryEntity(t *testing.T) {
 		t.Error("Expected len > 1 got 0")
 	}
 
-	e = &entity.Entity{}
+	e = &entity.Entities{}
 	q = goalchemy.NewQuery(entity.EndpointText, apikey)
 	q.AddParam("text", testtext2)
 	q.AddParam("knowledgeGraph", "1")
@@ -131,7 +129,7 @@ func TestQueryEntity(t *testing.T) {
 }
 
 func TestQueryMicro(t *testing.T) {
-	e := &micro.Micro{}
+	e := &micro.Micros{}
 	q := goalchemy.NewQuery(micro.EndpointURL, apikey)
 	q.AddParam("url", testurl2)
 	if err := q.Run(e); err != nil {
@@ -140,9 +138,12 @@ func TestQueryMicro(t *testing.T) {
 }
 
 func TestRelation(t *testing.T) {
-	e := &relation.Relation{}
+	e := &relation.Relations{}
 	q := goalchemy.NewQuery(relation.EndpointURL, apikey)
 	q.AddParam("url", testurl)
+	q.AddParam("sentiment", "1")
+	q.AddParam("keywords", "1")
+	q.AddParam("entities", "1")
 	if err := q.Run(e); err != nil {
 		t.Error(err)
 	}
@@ -150,7 +151,7 @@ func TestRelation(t *testing.T) {
 		t.Error("Expected len > 1 got 0")
 	}
 
-	e = &relation.Relation{}
+	e = &relation.Relations{}
 	q = goalchemy.NewQuery(relation.EndpointText, apikey)
 	q.AddParam("text", testtext)
 	if err := q.Run(e); err != nil {
@@ -158,5 +159,23 @@ func TestRelation(t *testing.T) {
 	}
 	if len(e.Results) == 0 {
 		t.Error("Expected len > 1 got 0")
+	}
+}
+*/
+
+func TestSentiment(t *testing.T) {
+	e := &sentiment.Sentiments{}
+	q := goalchemy.NewQuery(sentiment.EndpointURL, apikey)
+	q.AddParam("url", testurl2)
+	if err := q.Run(e); err != nil {
+		t.Error(err)
+	}
+
+	e = &sentiment.Sentiments{}
+	q = goalchemy.NewQuery(sentiment.EndpointTargetURL, apikey)
+	q.AddParam("url", testurl2)
+	q.AddParam("target", tphrase)
+	if err := q.Run(e); err != nil {
+		t.Error(err)
 	}
 }

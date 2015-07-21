@@ -117,7 +117,7 @@ const testdata = `
                 }`
 
 func TestEntity(t *testing.T) {
-	e := Entity{}
+	e := Entities{}
 	err := e.Decode([]byte(testdata))
 	if err != nil {
 		t.Error(err)

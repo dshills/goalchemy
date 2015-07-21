@@ -1,5 +1,6 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
+
 package taxonomy
 
 import (
@@ -7,8 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
+
+	"github.com/dshills/goalchemy/data"
 )
 
 // Taxonomy enpoint constants
@@ -18,51 +20,29 @@ const (
 	EndpointHTML = "html/HTMLGetRankedTaxonomy"
 )
 
-// Taxonomy represents a Taxonomy query result
-type Taxonomy struct {
-	Status     string   `json:"status"`
-	Usage      string   `json:"usage"`
-	TT         string   `json:"TotalTransactions"`
-	Language   string   `json:"language"`
-	StatusInfo string   `json:"statusInfo"`
-	Results    []Result `json:"taxonomy"`
-
-	Transactions int
-}
-
-// Result represents a scoring for a category
-type Result struct {
-	Category string `json:"label"`
-	C        string `json:"confident"`
-	S        string `json:"score"`
-
-	Confident bool
-	Score     float32
+// Taxonomies represents a Taxonomy query result
+type Taxonomies struct {
+	data.QStatus
+	Results []data.Taxonomy `json:"taxonomy"`
 }
 
 // Decode parses json data into Results.
-func (t *Taxonomy) Decode(data []byte) error {
+func (t *Taxonomies) Decode(data []byte) error {
 	if err := json.Unmarshal(data, t); err != nil {
 		return err
 	}
-	if t.Status != "OK" {
-		return errors.New(t.StatusInfo)
+	if err := t.Error(); err != nil {
+		return err
 	}
-	t.Transactions, _ = strconv.Atoi(t.TT)
+	t.Clean()
 	for i := 0; i < len(t.Results); i++ {
-		r := &t.Results[i]
-		ss, _ := strconv.ParseFloat(r.S, 32)
-		r.Score = float32(ss)
-		if r.C == "" {
-			r.Confident = true
-		}
+		t.Results[i].Clean()
 	}
-
 	return nil
 }
 
 // Required checks for required parameters
-func (t *Taxonomy) Required(end string, p url.Values) error {
+func (t *Taxonomies) Required(end string, p url.Values) error {
 	var el []string
 	switch end {
 	case EndpointURL:

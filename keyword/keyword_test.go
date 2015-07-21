@@ -536,7 +536,7 @@ const tjson = `
 `
 
 func TestKeyword(t *testing.T) {
-	k := Keyword{}
+	k := Keywords{}
 	if err := k.Decode([]byte(tjson)); err != nil {
 		t.Error(err)
 	}

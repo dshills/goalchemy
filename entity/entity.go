@@ -1,5 +1,6 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
+
 package entity
 
 import (
@@ -7,8 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
+
+	"github.com/dshills/goalchemy/data"
 )
 
 // Entity endpoint constants
@@ -18,94 +20,30 @@ const (
 	EndpointHTML = "html/HTMLGetRankedNamedEntities"
 )
 
-// Entity represents a Entity query result
-type Entity struct {
-	Status     string   `json:"status"`
-	Usage      string   `json:"usage"`
-	TT         string   `json:"TotalTransactions"`
-	Language   string   `json:"language"`
-	StatusInfo string   `json:"statusInfo"`
-	Results    []Result `json:"entities"`
-
-	Transactions int
-}
-
-// Result represents an entity query result
-type Result struct {
-	Type           string `json:"type"`
-	R              string `json:"relevance"`
-	KnowledgeGraph struct {
-		TH string `json:"TypeHierarchy"`
-	}
-	Count     string `json:"count"`
-	Text      string `json:"text"`
-	Sentiment struct {
-		Type  string `json:"type"`
-		S     string `json:"score"`
-		Mixed string `json:"mixed"`
-
-		Score float32
-	}
-	Disambiguated struct {
-		Name        string   `json:"name"`
-		SubType     []string `json:"subType"`
-		Website     string   `json:"website"`
-		Geo         string   `json:"geo"`
-		Dbpedia     string   `json:"dbpedia"`
-		Yago        string   `json:"yago"`
-		Opencyc     string   `json:"opencyc"`
-		Umbel       string   `json:"umbel"`
-		Freebase    string   `json:"freebase"`
-		CiaFactbook string   `json:"ciaFactbook"`
-		Census      string   `json:"census"`
-		Geonames    string   `json:"geonames"`
-		MusicBrainz string   `json:"musicBrainz"`
-		Crunchbase  string   `json:"crunchbase"`
-	}
-
-	Quotations []struct {
-		Quotation string `json:"quotation"`
-		Sentiment struct {
-			Type  string `json:"type"`
-			S     string `json:"score"`
-			Mixed string `json:"mixed"`
-
-			Score float32
-		}
-	}
-
-	Relevance     float32
-	TypeHierarchy string
+// Entities represents a Entity query result
+type Entities struct {
+	data.QStatus
+	Results []data.Entity `json:"entities"`
 }
 
 // Decode parses json data into Results.
-func (t *Entity) Decode(data []byte) error {
+func (t *Entities) Decode(data []byte) error {
 	if err := json.Unmarshal(data, t); err != nil {
 		return err
 	}
-	if t.Status != "OK" {
-		return errors.New(t.StatusInfo)
+	if err := t.Error(); err != nil {
+		return err
 	}
-	t.Transactions, _ = strconv.Atoi(t.TT)
+	t.Clean()
 	for i := 0; i < len(t.Results); i++ {
-		r := &t.Results[i]
-		s, _ := strconv.ParseFloat(r.Sentiment.S, 32)
-		r.Sentiment.Score = float32(s)
-		rr, _ := strconv.ParseFloat(r.R, 32)
-		r.Relevance = float32(rr)
-		r.TypeHierarchy = r.KnowledgeGraph.TH
-		for ii := 0; ii < len(r.Quotations); ii++ {
-			q := &r.Quotations[ii]
-			s, _ := strconv.ParseFloat(q.Sentiment.S, 32)
-			q.Sentiment.Score = float32(s)
-		}
+		t.Results[i].Clean()
 	}
 
 	return nil
 }
 
 // Required checks for required parameters
-func (t *Entity) Required(end string, p url.Values) error {
+func (t *Entities) Required(end string, p url.Values) error {
 	var el []string
 	switch end {
 	case EndpointURL:

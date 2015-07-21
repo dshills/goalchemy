@@ -30,7 +30,7 @@ const testdata = `
 }`
 
 func TestTaxonomy(t *testing.T) {
-	tax := Taxonomy{}
+	tax := Taxonomies{}
 	err := tax.Decode([]byte(testdata))
 	if err != nil {
 		t.Error(err)

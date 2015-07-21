@@ -1,5 +1,6 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
+
 package micro
 
 import (
@@ -7,8 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
+
+	"github.com/dshills/goalchemy/data"
 )
 
 // Micro endpoint constants
@@ -17,39 +19,27 @@ const (
 	EndpointHTML = "html/HTMLGetMicroformatData"
 )
 
-// Micro represents a Micro query result
-type Micro struct {
-	Status     string   `json:"status"`
-	Usage      string   `json:"usage"`
-	TT         string   `json:"TotalTransactions"`
-	Language   string   `json:"language"`
-	StatusInfo string   `json:"statusInfo"`
-	Results    []Result `json:"microformats"`
-
-	Transactions int
-}
-
-// Result represents a scoring for a category
-type Result struct {
-	FieldName string `json:"fieldName"`
-	FieldData string `json:"fieldData"`
+// Micros represents a Micro query result
+type Micros struct {
+	data.QStatus
+	Results []data.Micro `json:"microformats"`
 }
 
 // Decode parses json data into Results.
-func (t *Micro) Decode(data []byte) error {
+func (t *Micros) Decode(data []byte) error {
 	if err := json.Unmarshal(data, t); err != nil {
 		return err
 	}
-	if t.Status != "OK" {
-		return errors.New(t.StatusInfo)
+	if err := t.Error(); err != nil {
+		return err
 	}
-	t.Transactions, _ = strconv.Atoi(t.TT)
+	t.Clean()
 
 	return nil
 }
 
 // Required checks for required parameters
-func (t *Micro) Required(end string, p url.Values) error {
+func (t *Micros) Required(end string, p url.Values) error {
 	var el []string
 	switch end {
 	case EndpointURL:

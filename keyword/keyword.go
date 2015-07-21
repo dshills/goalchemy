@@ -1,5 +1,6 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
+
 package keyword
 
 import (
@@ -7,8 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
+
+	"github.com/dshills/goalchemy/data"
 )
 
 // Keyword endpoint constants
@@ -18,60 +20,30 @@ const (
 	EndpointHTML = "html/HTMLGetRankedKeywords"
 )
 
-// Keyword represents a Keyword query result
-type Keyword struct {
-	Status     string   `json:"status"`
-	Usage      string   `json:"usage"`
-	TT         string   `json:"TotalTransactions"`
-	Language   string   `json:"langauge"`
-	StatusInfo string   `json:"statusInfo"`
-	Results    []Result `json:"keywords"`
-
-	Transactions int
-}
-
-// Result represents the individual keywords
-type Result struct {
-	Sentiment struct {
-		Type  string `json:"type"`
-		S     string `json:"score"`
-		Mixed string `json:"mixed"`
-
-		Score float32
-	}
-	KnowledgeGraph struct {
-		TH string `json:"typeHierarchy"`
-	}
-	Text string `json:"text"`
-	R    string `json:"relevance"`
-
-	Relevance     float32
-	TypeHierarchy string
+// Keywords represents a Keyword query result
+type Keywords struct {
+	data.QStatus
+	Results []data.Keyword `json:"keywords"`
 }
 
 // Decode parses json data into Results.
-func (t *Keyword) Decode(data []byte) error {
+func (t *Keywords) Decode(data []byte) error {
 	if err := json.Unmarshal(data, t); err != nil {
 		return err
 	}
-	if t.Status != "OK" {
-		return errors.New(t.StatusInfo)
+	if err := t.Error(); err != nil {
+		return err
 	}
-	t.Transactions, _ = strconv.Atoi(t.TT)
+	t.Clean()
 	for i := 0; i < len(t.Results); i++ {
-		r := &t.Results[i]
-		s, _ := strconv.ParseFloat(r.Sentiment.S, 32)
-		r.Sentiment.Score = float32(s)
-		rr, _ := strconv.ParseFloat(r.R, 32)
-		r.Relevance = float32(rr)
-		r.TypeHierarchy = r.KnowledgeGraph.TH
+		t.Results[i].Clean()
 	}
 
 	return nil
 }
 
 // Required checks for required parameters
-func (t *Keyword) Required(end string, p url.Values) error {
+func (t *Keywords) Required(end string, p url.Values) error {
 	var el []string
 	switch end {
 	case EndpointURL:

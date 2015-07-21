@@ -97,7 +97,7 @@ const tjson = `
 `
 
 func TestConcept(t *testing.T) {
-	c := Concept{}
+	c := Concepts{}
 	if err := c.Decode([]byte(tjson)); err != nil {
 		t.Error(err)
 	}
