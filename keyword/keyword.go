@@ -1,6 +1,8 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package keyword supports decoding of Keyword Extraction API calls
+// The Keywords data struct supports the AlchemyAPIer interface
 package keyword
 
 import (

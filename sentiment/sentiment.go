@@ -1,6 +1,8 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package sentiment supports decoding of Sentiment Analysis API calls
+// The Sentiments data struct supports the AlchemyAPIer interface
 package sentiment
 
 import (

@@ -1,6 +1,8 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package entity supports decoding of Entity Extraction API calls
+// The Entities data struct supports the AlchemyAPIer interface
 package entity
 
 import (

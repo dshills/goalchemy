@@ -1,6 +1,8 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package micro supports decoding of MicroFormats Parsing API calls
+// The Micros data struct supports the AlchemyAPIer interface
 package micro
 
 import (

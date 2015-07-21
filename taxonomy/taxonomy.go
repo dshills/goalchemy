@@ -1,6 +1,8 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package taxonomy supports decoding of Taxonomy API calls
+// The Taxonomies data struct supports the AlchemyAPIer interface
 package taxonomy
 
 import (

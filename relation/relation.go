@@ -1,6 +1,8 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package relation supports decoding of Relation Extraction API calls
+// The Relations data struct supports the AlchemyAPIer interface
 package relation
 
 import (
