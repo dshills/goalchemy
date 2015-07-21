@@ -25,7 +25,7 @@ Simple Go SDK for the IBM Alchemy API
 const apikey = "<MY API KEY>"
 const aurl = "http://somerandom.com/url/about/stuff"
 
-tax := &taxonomy.Taxonomy{}
+tax := &taxonomy.Taxonomies{}
 query := goalchemy.NewQuery(taxonomy.EndpointURL, apikey)
 query.AddParam("url", aurl)
 if err := query.Run(tax); err != nil {
@@ -68,17 +68,18 @@ type AlchemyAPIer interface {
 ### Example AlchemyAPIer for Taxonomy
 
 ```go
-// Taxonomy represents a Taxonomy query result
-type Taxonomy struct {
-	Status     string
-	Usage      string
-	Language   string
-	Results    []Result
+// Taxonomies is a list of Taxonomy results
+type Taxonomies struct {
+	Status     string 
+	Usage      string 
+	Language   string 
+	StatusInfo string 
 	Transactions int
+	Results []Taxonomy
 }
 
-// Result represents a scoring for a category
-type Result struct {
+// Taxonomy represents a Taxonomy query result
+type Taxonomy struct {
 	Category string 
 	Confident bool
 	Score     float32
