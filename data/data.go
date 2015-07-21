@@ -1,6 +1,7 @@
 // Copyright 2015 Davin Hills. All rights reserved.
 // MIT license. License details can be found in the LICENSE file.
 
+// Package data contains common data structures shared between the AlchemyAPIer packages
 package data
 
 import (
