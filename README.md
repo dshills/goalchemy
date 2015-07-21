@@ -11,6 +11,8 @@ Simple Go SDK for the IBM Alchemy API
 * Microformats Parsing: URL, HTML
 * Taxonomy: URL, Text, HTML
 * Relation Extraction: URL, Text, HTML
+* Sentiment Extraction: URL, Text, HTML
+* Target Sentiment Extraction: URL, Text, HTML
 
 ## Installation
 	go get github.com/dshills/goalchemy
